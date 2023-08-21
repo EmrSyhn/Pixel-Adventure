@@ -15,13 +15,13 @@ class PixelAdventure extends FlameGame
 
   late final CameraComponent cam;
   Player player = Player(character: 'Mask Dude');
-  bool isShowJoystick = true;
   late JoystickComponent joystick;
+  bool isShowJoystick = true;
 
   @override
   FutureOr<void> onLoad() async {
     final world = Level(
-      levelName: 'Level_02',
+      levelName: 'Level_04',
       player: player,
     );
     // Tüm fotoğrafları cache'le
@@ -68,15 +68,15 @@ class PixelAdventure extends FlameGame
       case JoystickDirection.left:
       case JoystickDirection.upLeft:
       case JoystickDirection.downLeft:
-        player.direction = PlayerDirection.left;
+        player.horizontalMovement = -1.0;
         break;
       case JoystickDirection.right:
       case JoystickDirection.upRight:
       case JoystickDirection.downRight:
-        player.direction = PlayerDirection.right;
+        player.horizontalMovement = 1.0;
         break;
       default:
-        player.direction = PlayerDirection.none;
+        player.horizontalMovement = 0.0;
         break;
     }
   }
