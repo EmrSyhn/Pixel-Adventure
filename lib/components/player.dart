@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import '../pixel_adventure.dart';
+import 'collison_block.dart';
+import 'utils.dart';
 
 enum PlayerState { idle, run }
 
@@ -23,10 +25,12 @@ class Player extends SpriteAnimationComponent
   double moveSpeed = 100;
   Vector2 velocity = Vector2.zero();
   bool isFacingRight = true;
+  List<CollisonBlock> collisonBlocks = [];
 
   @override
   FutureOr<void> onLoad() {
     _loadAnimations();
+    debugMode = true;
     return super.onLoad();
   }
 
@@ -34,6 +38,7 @@ class Player extends SpriteAnimationComponent
   void update(double dt) {
     _updatePlayerState();
     _updatePlayerMovement(dt);
+    _checkHorizontalCollisions();
     super.update(dt);
   }
 
@@ -94,5 +99,21 @@ class Player extends SpriteAnimationComponent
   void _updatePlayerMovement(double dt) {
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
+  }
+
+  void _checkHorizontalCollisions() {
+    for (final block in collisonBlocks) {
+      if (!block.isPlatform) {
+        if (checkCollesion(this, block)) {
+          if (velocity.x > 0) {
+            velocity.x = 0;
+            position.x = block.x - width;
+          } else if (velocity.x < 0) {
+            velocity.x = 0;
+            position.x = block.x + block.width + width;
+          }
+        }
+      }
+    }
   }
 }
